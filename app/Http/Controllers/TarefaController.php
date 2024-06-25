@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\MensagemTestMail;
 use App\Models\Tarefa;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -25,7 +26,7 @@ class TarefaController extends Controller
      */
     public function create()
     {
-        //
+        return view('tarefas.create');
     }
 
     /**
@@ -33,13 +34,13 @@ class TarefaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Task::create($request->all());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Tarefa $tarefa)
+    public function show(Task $tarefa)
     {
         //
     }
@@ -47,7 +48,7 @@ class TarefaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tarefa $tarefa)
+    public function edit(Task $tarefa)
     {
         //
     }
@@ -55,7 +56,7 @@ class TarefaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tarefa $tarefa)
+    public function update(Request $request, Task $tarefa)
     {
         //
     }
@@ -63,7 +64,7 @@ class TarefaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tarefa $tarefa)
+    public function destroy(Task $tarefa)
     {
         //
     }
