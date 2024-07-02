@@ -7,18 +7,23 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('tarefas.index');
 });
 
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
+/* Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
     ->name('home')
-    ->middleware('verified');
+    ->middleware('verified'); */
 
 Route::resource('/tarefas', TarefaController::class)
     ->middleware('verified');
+
+
+
+Route::get('/export/{extension}', [TarefaController::class, 'export'])->name('task.export');
+Route::post('/import', [TarefaController::class, 'import'])->name('task.import');
 
 Route::get('mensagem-teste', function(){
     return new MensagemTestMail(); 

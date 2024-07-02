@@ -1,13 +1,12 @@
 <x-mail::message>
-# Introduction
+# {{$task}}
 
-The body of your message.
+Data Limite da Tarefa: {{$deadline}}
 
-<x-mail::button :url="">
-Button Text
+<x-mail::button :url="$url">
+Acessar Tarefa
 </x-mail::button>
 
 Thanks,<br>
 {{ config('app.name') }}
 </x-mail::message>
-  

@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TaskExport;
+use App\Imports\TaskImport;
 use App\Mail\MensagemTestMail;
+use App\Mail\NovaTarefaMail;
 use App\Models\Tarefa;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TarefaController extends Controller
 {
@@ -15,57 +20,86 @@ class TarefaController extends Controller
         $this->middleware('auth');
     } 
 
-    public function index()
+    public function index(Request $request)
     {
-        Mail::to('brbilbits@gmail.com')->send(new MensagemTestMail());
-        return "Email Enviado com Sucesso";
+        $user_id = Auth::user()->id;
+        $tasks = Task::where('user_id', '=', $user_id)->paginate(10);
+        return view('tarefas.index', ['tasks' => $tasks, 'request' => $request->all()]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('tarefas.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        Task::create($request->all());
+        $data = $request->all();
+        $data['user_id'] = Auth::user()->id;
+        $task = Task::create($data);
+
+       /*  Mail::to(Auth::user()->email)
+            ->send(new NovaTarefaMail($task)); */
+
+        return redirect()->route('tarefas.edit', ['tarefa' => $task->id]);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Task $tarefa)
     {
-        //
+        
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Task $tarefa)
     {
-        //
+        if(Auth::user()->id == $tarefa->user_id){
+            return view('tarefas.update', ['task' => $tarefa]);
+        }else{
+            return view('acesso-negado');
+        }
+        
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Task $tarefa)
     {
-        //
+        if(Auth::user()->id == $tarefa->user_id){
+            $tarefa->update($request->all());
+            return redirect()->route('tarefas.edit', ['tarefa' => $tarefa->id]);
+        }else{
+            return view('acesso-negado');
+        }
+        
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Task $tarefa)
     {
-        //
+        if(Auth::user()->id == $tarefa->user_id){
+            $tarefa->delete();
+            return redirect()->route('tarefas.index');
+        }else{
+            return view('acesso-negado');
+        }  
     }
+
+    public function export($extension)
+    {
+        if(in_array($extension, ['xlsx', 'csv', 'pdf'])){
+            return Excel::download(new TaskExport(Auth::user()), 'tasks.'.$extension);
+        }else{
+            redirect()->route('tarefas.index');
+        }   
+    }
+
+    public function import(Request $request) 
+    {
+       
+        $request->validate([
+            'file' => 'required|max:2048',
+        ]);
+  
+        Excel::import(new TaskImport(Auth::user()), $request->file('file'));
+
+
+        return back()->with('success', 'Tarefa importada com sucesso.');
+    }
+
 }
