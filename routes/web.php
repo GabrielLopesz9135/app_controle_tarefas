@@ -23,9 +23,13 @@ Route::resource('/tarefas', TarefaController::class)
 
 
 Route::get('/export/{extension}', [TarefaController::class, 'export'])->name('task.export');
+Route::get('/exportPdf', [TarefaController::class, 'exportPdf'])->name('task.exportPdf');
 Route::post('/import', [TarefaController::class, 'import'])->name('task.import');
 
 Route::get('mensagem-teste', function(){
     return new MensagemTestMail(); 
    /* Mail::to('brbilbits@gmail.com')->send(new MensagemTestMail()); */
 });
+
+
+Route::get('/pdfExport', [TarefaController::class, 'import']);

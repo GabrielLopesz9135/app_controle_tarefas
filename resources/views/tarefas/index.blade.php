@@ -3,28 +3,27 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header row d-flex align-items-center">
+                    
                     <div class="col-4 mb-3">
                         Lista de Tarefas
-                      </div>
+                    </div>
+                    
                     <div class="col-8 d-flex justify-content-end mb-3"> 
                         <a class="px-3" href="{{route('tarefas.create')}}" class=""> Nova Tarefa</a>
                         <a class="px-3" href="{{route('task.export', ['extension' => 'xlsx'])}}">XSLX</a>
                         <a class="px-3" href="{{route('task.export', ['extension' => 'csv'])}}">CSV</a>
-                        <a class="px-3" href="{{route('task.export', ['extension' => 'pdf'])}}">PDF</a>
+                        <a class="px-3" href="{{route('task.exportPdf')}}">PDF</a>
                     </div>
 
-
-
-                        <form class="row mt-2" action="{{ route('task.import') }}" method="POST" enctype="multipart/form-data">
+                        <form class="row mt-2 mb-2" action="{{ route('task.import') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="col-3"><button type="submit" class="btn btn-success"><i class="fa fa-file px-2"></i> Importar Arquivo</button></div>
                             <div class="col-9"><input type="file" name="file" class="form-control"></div>   
                         </form>
             
-
                 </div>
 
                 <div class="card-body">

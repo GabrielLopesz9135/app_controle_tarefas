@@ -4,13 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exports\TaskExport;
 use App\Imports\TaskImport;
-use App\Mail\MensagemTestMail;
-use App\Mail\NovaTarefaMail;
-use App\Models\Tarefa;
 use App\Models\Task;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TarefaController extends Controller
@@ -37,10 +34,6 @@ class TarefaController extends Controller
         $data = $request->all();
         $data['user_id'] = Auth::user()->id;
         $task = Task::create($data);
-
-       /*  Mail::to(Auth::user()->email)
-            ->send(new NovaTarefaMail($task)); */
-
         return redirect()->route('tarefas.edit', ['tarefa' => $task->id]);
     }
 
@@ -100,6 +93,15 @@ class TarefaController extends Controller
 
 
         return back()->with('success', 'Tarefa importada com sucesso.');
+    }
+
+    public function exportPdf()
+    {
+        $tasks = Task::where('user_id', '=', Auth::user()->id)->get();
+        $paginador = 10;
+        $numPages = ceil(count($tasks) / $paginador);
+        $pdf = Pdf::loadView('pdf.tasks', ['data' => $tasks, 'numPages' => $numPages, 'paginador' => $paginador]);
+        return $pdf->download('tasks.pdf'); 
     }
 
 }
