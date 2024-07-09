@@ -101,7 +101,7 @@ class TarefaController extends Controller
         $paginador = 10;
         $numPages = ceil(count($tasks) / $paginador);
         $pdf = Pdf::loadView('pdf.tasks', ['data' => $tasks, 'numPages' => $numPages, 'paginador' => $paginador]);
-        return $pdf->download('tasks.pdf'); 
+        return $pdf->stream('tasks.pdf'); 
     }
 
 }

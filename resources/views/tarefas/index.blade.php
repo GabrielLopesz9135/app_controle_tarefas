@@ -15,7 +15,7 @@
                         <a class="px-3" href="{{route('tarefas.create')}}" class=""> Nova Tarefa</a>
                         <a class="px-3" href="{{route('task.export', ['extension' => 'xlsx'])}}">XSLX</a>
                         <a class="px-3" href="{{route('task.export', ['extension' => 'csv'])}}">CSV</a>
-                        <a class="px-3" href="{{route('task.exportPdf')}}">PDF</a>
+                        <a class="px-3" href="{{route('task.exportPdf')}}" target="_blanck">PDF</a>
                     </div>
 
                         <form class="row mt-2 mb-2" action="{{ route('task.import') }}" method="POST" enctype="multipart/form-data">
